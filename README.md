@@ -7,7 +7,7 @@
 <h4 align="center">
   <b>Your Powerful All-In-One Learning Companion Powered by ChatGPT</b>
   <br /><br />
-  <a href="[https://github.com/NimishLingesh](https://github.com/NimishLingesh/Intellitool)">Main Repo</a>
+  <a href="https://github.com/NimishLingesh/Intellitool">Main Repo</a>
 </h4>
 
 
