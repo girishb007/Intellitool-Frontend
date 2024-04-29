@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactPlayer from 'react-player';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import { PlayCircleOutline as PlayIcon } from '@mui/icons-material';
+import { Box, Flex, Button, Text, IconButton, Input, InputGroup, InputRightElement, Collapse,useColorModeValue } from '@chakra-ui/react';
+import { CloseIcon, SearchIcon, ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 
 const Collections = () => {
     const [courses, setCourses] = useState([
@@ -61,40 +59,102 @@ const Collections = () => {
                 { id: '4b', title: "Lecture 2", url: "https://example.com/lecture2.mp4" },
                 { id: '4c', title: "Lecture 3", url: "https://example.com/lecture2.mp4" },
                 { id: '4d', title: "Lecture 4", url: "https://example.com/lecture2.mp4" },
-
                 // Add more lectures as needed
             ],
         },
     ]);
     const [currentLectureUrl, setCurrentLectureUrl] = useState('');
+    const [activeCourseId, setActiveCourseId] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [expandedCourses, setExpandedCourses] = useState({});
 
-    const handleLectureClick = (lectureUrl) => {
+    // Initialize expanded state for all courses
+    useEffect(() => {
+        const expandedState = courses.reduce((acc, course) => ({
+            ...acc,
+            [course.id]: true // Set each course to be expanded by default
+        }), {});
+        setExpandedCourses(expandedState);
+    }, [courses]);
+
+    const handleLectureClick = (lectureUrl, courseId) => {
         setCurrentLectureUrl(lectureUrl);
+        setActiveCourseId(courseId);
     };
 
-    return (
-        <div className="collections-container">
-            {courses.map((course) => (
-                <div key={course.id} className="course-container">
-                    <h2>{course.name}</h2>
-                    <div className="lectures-container overflow-x-auto whitespace-nowrap">
-                        {course.lectures.map((lecture) => (
-                            <button
-                                key={lecture.id}
-                                onClick={() => handleLectureClick(lecture.url)}
-                                className="lecture-button bg-white shadow-md rounded-lg cursor-pointer inline-block p-2 m-2"
-                            >
-                                {lecture.title}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            ))}
+    const handleCloseVideo = () => {
+        setCurrentLectureUrl('');
+        setActiveCourseId(null);
+    };
 
-            {currentLectureUrl && (
-                <ReactPlayer url={currentLectureUrl} playing controls width="100%" />
-            )}
-        </div>
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const toggleCourse = (courseId) => {
+        setExpandedCourses(prev => ({
+            ...prev,
+            [courseId]: !prev[courseId]
+        }));
+    };
+
+    const bg = useColorModeValue('white', 'gray.800');
+    const color = useColorModeValue('gray.800', 'white');
+
+    return (
+        <Flex direction="column" align="center" m={4}>
+            <InputGroup mb={4} width="80%" maxWidth="600px">
+                <Input
+                    placeholder="Search lectures..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                />
+                <InputRightElement children={<IconButton aria-label="Search" icon={<SearchIcon />} onClick={() => setSearchTerm('')} bg={bg} />} />
+            </InputGroup>
+            {courses.map((course) => (
+                <Box key={course.id} p={5} shadow="md" borderWidth="1px" borderRadius="md" overflow="hidden" width="full">
+                    <Flex justify="space-between" align="center">
+                        <Text fontSize="xl" fontWeight="bold">{course.name}</Text>
+                        <IconButton
+                            icon={expandedCourses[course.id] ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                            onClick={() => toggleCourse(course.id)}
+                            aria-label="Expand/Collapse"
+                        />
+                    </Flex>
+                    <Collapse in={expandedCourses[course.id]} animateOpacity>
+                        <Flex overflowX="auto" bg={bg}>
+                            {course.lectures.filter(lecture => 
+                                lecture.title.toLowerCase().includes(searchTerm.toLowerCase())
+                            ).map((lecture) => (
+                                <Button key={lecture.id} onClick={() => handleLectureClick(lecture.url, course.id)}
+                                    m={2} p={4} height="120px" minWidth="180px" bg="blue.500" color="white" shadow="sm"
+                                    borderRadius="md">
+                                    {lecture.title}
+                                </Button>
+                            ))}
+                        </Flex>
+                    </Collapse>
+                    {activeCourseId === course.id && currentLectureUrl && (
+                        <Flex width="full" my={4} position="relative">
+                            <ReactPlayer url={currentLectureUrl} playing={true} controls={true} width="100%" />
+                            <IconButton
+                                aria-label="Close video"
+                                icon={<CloseIcon />}
+                                position="absolute"
+                                right="0"
+                                top="-10px"
+                                onClick={handleCloseVideo}
+                                size="sm"
+                                isRound={true}
+                                bg="red.500"
+                                color="white"
+                                _hover={{ bg: "red.600" }}
+                            />
+                        </Flex>
+                    )}
+                </Box>
+            ))}
+        </Flex>
     );
 };
 

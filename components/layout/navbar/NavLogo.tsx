@@ -7,7 +7,7 @@ export const NavLogo = () => {
     <div
       className={`flex items-center font-bold text-[24px] ${textLinearGradientClassName}`}
     >
-      <Link href="/">Intellitool</Link>
+      <Link href="/"></Link>
     </div>
   );
 };

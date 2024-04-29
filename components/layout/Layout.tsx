@@ -17,15 +17,14 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // Navigation links for the main navbar
   const navbarLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/summariser', label: 'Summarise' },
-    { href: '/explainer', label: 'Explain' },
-    { href: '/flash-card-generator', label: 'Flash Card' }
+   
   ];
 
   // Links for the navigation drawer
   const drawerLinks = [
     { href: '/', label: 'Home' },
+    { href: '/courses', label: 'Subjects' },
+    { href: '/addCourses', label: 'Courses' },
     { href: '/collections', label: 'Collections' },
     { href: '/tasks', label: 'Task' },
     { href: '/coursework', label: 'CourseWork' },
@@ -33,7 +32,11 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { href: '/pdf', label: 'PDF' },
     { href: '/user', label: 'User' },
     { href: '/student', label: 'Student' },
-    { href: '/professor', label: 'Professor' }
+    { href: '/professor', label: 'Professor' },
+    { href: '/summariser', label: 'Summarise' },
+    { href: '/explainer', label: 'Explain' },
+    { href: '/flash-card-generator', label: 'Flash Card' }
+    
   ];
 
   return (
